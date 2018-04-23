@@ -1,10 +1,21 @@
 from flask import Flask, request, redirect, render_template
 from flask_sqlalchemy import SQLAlchemy 
 
+# Flask-WTF
+from flask.ext.wtf import Form 
+from wtforms import TextField, PasswordField, validators, HiddenField
+from wtforms import TextAreaField, BooleanField
+from wtforms.validators import Requred, EqualTo, Optional
+from wtforms.validators import Length, email
+
 app = Flask(__name__)
 app.config['DEBUG'] = True 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://capstone-project:password@localhost:8889/capstone-project'
 app.config['SQLALCHEMY_ECHO'] = True 
+
+app.config['CSRF_ENABLED'] = True 
+app.config['SECRET_KEY'] = 'pie'
+
 db = SQLAlchemy(app)
 
 
@@ -81,13 +92,26 @@ class Customers(db.Model):
         self.password = password
         orders = db.relationship('Orders', backref='customers')
 
-@app.route('/homepage')
-def index():
-    return render_template('homepage.html')
+
+
+@app.route('/')
+def homepage():
+    return render_template('index.html', title='Fun House Pizza')
 
 @app.route('/menu')
 def display():
     return render_template('menu.html')
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method =='POST':
+        form = SignupForm(request.form)
+        if form.validate():
+            pass
+        else: 
+            return render_template('signup.html', form = form, title = "Signup for Account")
+    return render_template('signup.html', form = SignupForm(), title = "Signup for Account")
+
 
 if __name__ == '__main__':
     app.run()

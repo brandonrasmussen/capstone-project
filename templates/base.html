@@ -8,6 +8,8 @@
         <link href="https://fonts.googleapis.com/css?family=Muli|Comfortaa" rel="stylesheet">
         <title>{{title}}</title>
         <style>
+
+            /* Bootstrap modifications */
             .navbar {
             background-color: #ffffff;
             }
@@ -69,6 +71,8 @@
             color: #000000;
             }
 
+
+            /* Classes */
             .logo {
                 float: right; 
                 width: 35%;
@@ -76,11 +80,10 @@
             }
 
             .banner {
-                position: absolute;
+                position: relative;
                 left: 0;
                 right: 0; 
-                height: 50px;
-                margin-top: 10px;
+                height: 60px;
                 background-color: #3376FF;
 
                 border: solid; 
@@ -94,7 +97,7 @@
                 right: 0;
                 bottom: 0;
                 height: 60px;
-                margin-top: 10px;
+                margin-top: 20px;
                 background-color: #3C71FE;
 
                 border: solid; 
@@ -108,6 +111,7 @@
                 font-family: 'Comfortaa', cursive;
                 margin-left: 20px;
                 font-size: 20px;
+                margin-top: 5px;
             }
 
             .right {
@@ -115,6 +119,7 @@
                 color: white; 
                 font-family: 'Comfortaa', cursive;
                 margin-right: 20px;
+                margin-top: 5px;
                 font-size: 20px;
                 
             }
@@ -123,6 +128,11 @@
                 margin-top: 5px;
                 padding-right: -1px;
             }
+            
+            .container-fluid {
+                margin-top: 30px;
+            }
+
 
         </style>
     </head>
@@ -147,14 +157,21 @@
                     </li>
                 </ul>
             
-                <a href="/homepage"><img class="logo" src="static/images/CompanyLogo.png" alt="logo"></a>
+                <a href="/"><img class="logo" src="static/images/CompanyLogo.png" alt="logo"></a>
             </div>
         </nav>
-        
-        <div class="banner">
+        {% block change_banner %}
+            <div class="banner">
                 <p class="left">Welcome to Fun House Pizza</p>
                 <p class="right">Sign In</p>
+            </div>
+        {% endblock %}
+        
+        <div class="container-fluid">
+            {% block content %}
+            {% endblock %}
         </div>
+
         <footer>
             <div class="footer">
                 <img class="left" id="social" src="static/images/Facebook.png" alt="facebook">
@@ -162,6 +179,8 @@
                 <p class="right">(816)525-2898</p>
             </div>
         </footer>
+
+        <!-- Scripts -->
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
