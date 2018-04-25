@@ -11,57 +11,65 @@
     <h2>Create an Account</h2>
     <form action="/signup" method="POST">
         <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="firstName">First Name</label>
-                <input type="text" class="form-control" placeholder="First" value='{{ firstName }}' required>
+            <!-- creates specail token for current form -->
+            {{ form.hidden_tag() }}
+            <div class="form-group col-md-6 {% if form.firstName.errors %} has-error {% endif %}">
+                {{form.firstName.label}}
+                {{ form.firstName(class="form-control", placeholder="John") }}
+                {{ form.firstName.errors[0] }}
             </div>
-            <div class="form-group col-md-6">
-                <label for="lastName">Last Name</label>
-                <input type="text" class="form-control" id="lastName" placeholder="Last" value='{{ lastName }}' required>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="email">Email</label>
-                <input type="email" class="form-control" placeholder="Email Address" value='{{ email }}' required>
-            </div>
-            <div class="form-group col-md-6">
-                <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" placeholder="Password" required>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="inputAddress">Address</label>
-            <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
-        </div>
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="apartmentNumber">Apartment Number</label>
-                <input type="text" class="form-control" id="apartmentNumber" placeholder="Apartment, studio, or floor">
-            </div>
-            <div class="form-group col-md-6">
-                <label for="phone">Phone Number</label>
-                <input type="phone" class="form-control" id="phone" required>
+            <div class="form-group col-md-6 {% if form.lastName.errors %} has-error {% endif %}">
+                {{form.lastName.label}}
+                {{ form.lastName(class="form-control", placeholder="Smith") }}
+                {{ form.lastName.errors[0] }}
             </div>
         </div>
         <div class="form-row">
+            <div class="form-group col-md-6 {% if form.email.errors %} has-error {% endif %}">
+                {{form.email.label}}
+                {{ form.email(class="form-control", placeholder="jsmith@yahoo.com") }}
+                {{ form.email.errors[0] }}
+            </div>
+            <div class="form-group col-md-6 {% if form.password.errors %} has-error {% endif %}">
+                {{form.password.label}}
+                {{ form.password(class="form-control", placeholder="Min. 6 Characters") }}
+                {{ form.password.errors[0] }}
+            </div>
+        </div>
+        <div class="form-group {% if form.address.errors %} has-error {% endif %}">
+            {{form.address.label}}
+            {{ form.address(class="form-control", placeholder="405 NW Blue Parkway") }}
+            {{ form.address.errors[0] }}
+        </div>
+        <div class="form-row">
             <div class="form-group col-md-6">
-            <label for="city">City</label>
-            <input type="text" class="form-control" id="city">
+                {{form.apartmentNumber.label}}
+                {{ form.apartmentNumber(class="form-control", placeholder="Apartment, studio, or floor") }}
             </div>
-            <div class="form-group col-md-4">
-                <label for="state">State</label>
-                <select id="state" class="form-control">
-                    <option selected>Choose...</option>
-                    <option>MO</option>
-                </select>
+            <div class="form-group col-md-6 {% if form.phone.errors %} has-error {% endif %}">
+                {{form.phone.label}}
+                {{ form.phone(class="form-control", placeholder="(816)525-2898") }}
+                {{ form.phone.errors[0] }}
             </div>
-            <div class="form-group col-md-2">
-                <label for="postalCode">Zip Code</label>
-                <input type="text" class="form-control" id="postalCode">
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6 {% if form.city.errors %} has-error {% endif %}">
+                {{form.city.label}}
+                {{ form.city(class="form-control", placeholder="Lee's Summit") }}
+                {{ form.city.errors[0] }}
+            </div>
+            <div class="form-group col-md-4 {% if form.state.errors %} has-error {% endif %}">
+                {{form.state.label}}
+                {{ form.state(class="form-control", placeholder="Missouri") }}
+                {{ form.state.errors[0] }}
+            </div>
+            <div class="form-group col-md-2 {% if form.postalCode.errors %} has-error {% endif %}">
+                {{form.postalCode.label}}
+                {{ form.postalCode(class="form-control", placeholder="64063") }}
+                {{ form.postalCode.errors[0] }}
             </div>
         </div>
         
-        <button type="submit" class="btn btn-primary">Sign in</button>
+        <button type="submit" class="btn btn-primary">Sign Up</button>
     </form>
 {% endblock %}

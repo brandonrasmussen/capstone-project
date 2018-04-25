@@ -1,11 +1,12 @@
 from flask import Flask, request, redirect, render_template
 from flask_sqlalchemy import SQLAlchemy 
+import os
 
 # Flask-WTF
-from flask.ext.wtf import Form 
+from flask_wtf import Form 
 from wtforms import TextField, PasswordField, validators, HiddenField
 from wtforms import TextAreaField, BooleanField
-from wtforms.validators import Requred, EqualTo, Optional
+from wtforms.validators import Required, EqualTo, Optional
 from wtforms.validators import Length, email
 
 app = Flask(__name__)
@@ -78,8 +79,8 @@ class Customers(db.Model):
     email = db.Column(db.String(40), unique=True)
     password = db.Column(db.String(20))
 
-    def __init__(self, firstName, lastName, address, apartmentNumber, city, state, postalCode, phone, 
-        email, password):
+    def __init__(self, firstName = None, lastName = None, address = None, apartmentNumber = None, city = None, state = None, postalCode= None, phone = None, 
+        email = None, password = None):
         self.firstName = firstName
         self.lastName = lastName
         self.address = address
@@ -92,6 +93,30 @@ class Customers(db.Model):
         self.password = password
         orders = db.relationship('Orders', backref='customers')
 
+# Class for Signup WTForm Fields
+class SignupForm(Form):
+    firstName = TextField('First Name', validators=[
+            Required('Please provide your first name')])
+    lastName = TextField('Last Name', validators=[
+            Required('Please provide your last name')])
+    address = TextField('Address', validators=[
+            Required('Please provide an address')])
+    apartmentNumber = TextField('Apartment Number')
+    city = TextField('City', validators=[
+            Required('Please provide a city')])
+    state = TextField('State', validators=[
+            Required('Please provide a state')])
+    postalCode = TextField('Zip Code', validators=[
+            Required('Please provide a zip code')])
+    phone = TextField('Phone Number', validators=[
+            Required('Please provide a phone number')])
+    email = TextField('Email Address', validators=[
+            Required('Please provide a valid email address'),
+            Length(min=6, message=(u'Email address too short')),
+            email(message=(u'That\'s not a valid email address.'))])
+    password = PasswordField('Password', validators=[
+            Required(),
+            Length(min=6, message=(u'Password needs to be a minimum of six characters'))])
 
 
 @app.route('/')
@@ -106,8 +131,18 @@ def display():
 def signup():
     if request.method =='POST':
         form = SignupForm(request.form)
+
         if form.validate():
-            pass
+            customer = Customers()
+            form.populate_obj(customer)
+            email_exist = Customers.query.filter_by(email=form.email.data).first()
+            if email_exist:
+                form.email.errors.append('An account with that email address already exists')
+                return render_template('signup.html', form = form, title = "Signup for Account")
+            else:
+                db.session.add(customer)
+                db.session.commit()
+                return render_template('index.html', customer = customer)
         else: 
             return render_template('signup.html', form = form, title = "Signup for Account")
     return render_template('signup.html', form = SignupForm(), title = "Signup for Account")
