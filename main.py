@@ -146,6 +146,10 @@ def homepage():
 def menu():
     return render_template('menu.html')
 
+@app.route('/companyinfo')
+def info():
+    return render_template('companyinfo.html', title='Company Information')
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method =='POST':
