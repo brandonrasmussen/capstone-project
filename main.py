@@ -1,5 +1,5 @@
-from flask import Flask, request, redirect, render_template
-from flask_sqlalchemy import SQLAlchemy 
+from flask import Flask, request, redirect, render_template, session, flash
+from flask_sqlalchemy import SQLAlchemy
 import os
 
 # Flask-WTF
@@ -8,6 +8,12 @@ from wtforms import TextField, PasswordField, validators, HiddenField
 from wtforms import TextAreaField, BooleanField
 from wtforms.validators import Required, EqualTo, Optional
 from wtforms.validators import Length, email
+
+# Hash Passwords
+from werkzeug.security import generate_password_hash, check_password_hash
+
+# Handle Login
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 app = Flask(__name__)
 app.config['DEBUG'] = True 
@@ -19,6 +25,9 @@ app.config['SECRET_KEY'] = 'pie'
 
 db = SQLAlchemy(app)
 
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
 
 class Products(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -66,7 +75,7 @@ class OrderDetails(db.Model):
         self.order = order
         self.product = product
 
-class Customers(db.Model):
+class Customers(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     firstName = db.Column(db.String(30))
     lastName = db.Column(db.String(30))
@@ -77,10 +86,10 @@ class Customers(db.Model):
     postalCode = db.Column(db.Integer)
     phone = db.Column(db.String(10))
     email = db.Column(db.String(40), unique=True)
-    password = db.Column(db.String(20))
+    password = db.Column(db.String(80))
 
-    def __init__(self, firstName = None, lastName = None, address = None, apartmentNumber = None, city = None, state = None, postalCode= None, phone = None, 
-        email = None, password = None):
+    def __init__(self, firstName = None, lastName = None, address = None, apartmentNumber = None, 
+        city = None, state = None, postalCode= None, phone = None, email = None, password = None):
         self.firstName = firstName
         self.lastName = lastName
         self.address = address
@@ -92,6 +101,10 @@ class Customers(db.Model):
         self.email = email
         self.password = password
         orders = db.relationship('Orders', backref='customers')
+
+@login_manager.user_loader
+def load_user(customer_id):
+    return Customers.query.get(int(customer_id))
 
 # Class for Signup WTForm Fields
 class SignupForm(Form):
@@ -118,13 +131,19 @@ class SignupForm(Form):
             Required(),
             Length(min=6, message=(u'Password needs to be a minimum of six characters'))])
 
+# Class for Login WTForm Fields
+class LoginForm(Form):
+    email = TextField('Email Address', validators=[
+            Required('Please provide a valid email address')])
+    password = PasswordField('Password', validators=[
+            Required('Please provide a valid password')])
 
 @app.route('/')
 def homepage():
     return render_template('index.html', title='Fun House Pizza')
 
 @app.route('/menu')
-def display():
+def menu():
     return render_template('menu.html')
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -132,9 +151,11 @@ def signup():
     if request.method =='POST':
         form = SignupForm(request.form)
 
-        if form.validate():
-            customer = Customers()
-            form.populate_obj(customer)
+        if form.validate_on_submit():
+            hashed_password = generate_password_hash(form.password.data, method='sha256')
+            customer = Customers(firstName=form.firstName.data, lastName=form.lastName.data, address=form.address.data, 
+            apartmentNumber=form.apartmentNumber.data, city=form.city.data, state=form.state.data, postalCode=form.postalCode.data,
+            phone=form.phone.data, email=form.email.data, password=hashed_password)
             email_exist = Customers.query.filter_by(email=form.email.data).first()
             if email_exist:
                 form.email.errors.append('An account with that email address already exists')
@@ -147,6 +168,21 @@ def signup():
             return render_template('signup.html', form = form, title = "Signup for Account")
     return render_template('signup.html', form = SignupForm(), title = "Signup for Account")
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+
+    if form.validate_on_submit():
+        email_exist = Customers.query.filter_by(email=form.email.data).first()
+        user = Customers.query.filter_by(email=form.email.data).first()
+
+        if not email_exist:
+            form.email.errors.append('There is not an account with this email')
+        elif user:
+            if check_password_hash(user.password, form.password.data):
+                login_user(user)
+                return render_template('index.html', title ="Login")
+    return render_template('login.html', form=form, title ="Login")
 
 if __name__ == '__main__':
     app.run()
