@@ -1,5 +1,20 @@
 {% extends "base.html" %}
 
+{% block change_banner %}
+{% if current_user.is_authenticated %}
+    <div class="banner">
+        <p class="left">Welcome to Fun House Pizza</p>
+        <p class="right">{{ current_user.firstName }} | <a href='/logout'>Log Out</a></p>
+    </div>
+{% else %}
+    <div class="banner">
+        <p class="left">Welcome to Fun House Pizza</p>
+        <p class="right"><a href="/login">Sign In</a></p>
+    </div>
+{% endif %}
+{% endblock %}
+
+
 {% block content %}
     <h1>Specials</h1>
     <div class="row">

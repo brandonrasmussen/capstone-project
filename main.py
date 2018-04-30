@@ -188,5 +188,11 @@ def login():
                 return render_template('index.html', title ="Login")
     return render_template('login.html', form=form, title ="Login")
 
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return render_template('index.html')
+
 if __name__ == '__main__':
     app.run()
