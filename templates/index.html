@@ -16,12 +16,91 @@
 
 
 {% block content %}
-    <h1>Specials</h1>
-    <div class="row">
-        <div class="col-sm-3">column</div>
-        <div class="col-sm-3">column</div>
-        <div class="col-sm-3">column</div>
-        <div class="col-sm-3">column</div>
+    <div class="container-fluid">
+        <h1>Specials</h1>
     </div>
-    
+    <div class="card-deck">
+        <div class="card border-dark border-3">
+            <div class="card-body text-center">
+                <h4 class="card-title">Tuesday</h4>
+            </div>
+            <img class="img-fluid card-img" src="static/images/SmallPizza.jpg" alt="Pizza">
+            <div class="card-body text-center">
+                <p class="card-text text-muted">Any small 3-topping pizza</p>
+                <h5 class="card-text" style="color: red">$6.99</h5>
+            </div>
+        </div>
+        <div class="card border-dark border-3">
+            <div class="card-body text-center">
+                <h4 class="card-title">Wednesday</h4>
+            </div>
+            <img class="img-fluid card-img" src="static/images/HappyHour.jpg" alt="Alcoholic Drinks">
+            <div class="card-body text-center">
+                <p class="card-text text-muted">Happy Hour ALL DAY!</p>
+            </div>
+        </div>
+        <div class="card border-dark border-3">
+            <div class="card-body text-center">
+                <h4 class="card-title">Thursday</h4>
+            </div>
+            <img class="img-fluid card-img" src="static/images/Coke.jpg" alt="Coca Cola">
+            <div class="card-body text-center">
+                <p class="card-text text-muted">Free pitcher of Coke with any large pizza</p>
+            </div>
+        </div>
+        <div class="card border-dark border-3">
+            <div class="card-body text-center">
+                <h4 class="card-title">Friday & Saturday</h4>
+            </div>
+            <img class="img-fluid card-img" src="static/images/QuestionMark.jpg" alt="Question Marks">
+            <div class="card-body text-center">
+                <p class="card-text text-muted">Owner's Choice</p>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <h1>Menu</h1>
+        <br>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="menu-title">
+                    <img class="img-fluid menu-img" src="static/images/Pizza.jpg" alt="Pizza">
+                    <h3 class="top-left"><a href="#">Pizza</a></h3>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="menu-title">
+                    <img class="img-fluid menu-img" src="static/images/chickenstrip.jpg" alt="Chicken">
+                    <h3 class="top-left"><a href="#">Chicken</a></h3>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="menu-title">
+                    <img class="img-fluid menu-img" src="static/images/sandwich.jpg" alt="Sandwiches">
+                    <h3 class="top-left"><a href="#">Sandwiches</a></h3>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="menu-title">
+                    <img class="img-fluid menu-img" src="static/images/Cheeseburger.jpg" alt="Cheeseburger">
+                    <h3 class="top-left"><a href="#">Burgers</a></h3>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="menu-title">
+                    <img class="img-fluid menu-img" src="static/images/Breadsticks.jpg" alt="Sides">
+                    <h3 class="top-left"><a href="#">Sides</a></h3>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="menu-title">
+                    <img class="img-fluid menu-img" src="static/images/Cookies.jpeg" alt="Dessert">
+                    <h3 class="top-left"><a href="#">Desserts</a></h3>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

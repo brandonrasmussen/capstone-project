@@ -69,6 +69,15 @@
         .navbar .navbar-link:hover {
             color: #000000;
         }
+        .border-3 {
+            border-width:3px !important;
+        }
+        .card-deck{
+            margin-top: 30px;
+        }
+        .nav-link {
+            color:black !important;
+        }
 
 
         /* Classes and IDs */
@@ -130,6 +139,31 @@
 
         .container-fluid {
             margin-top: 30px;
+        }
+
+        .menu-img {
+            height: 200px;
+            width: 400px;
+        }
+
+        .menu-title {
+            position: relative;
+            text-align: center;
+            color: white;
+        }
+
+        .top-left {
+            position: absolute;
+            top: 8px;
+            left: 16px;
+        }
+        
+        .card-img {
+            height: 200px;
+        }
+
+        a {
+            color: white !important;
         }
 
         /*form sign-in*/
@@ -208,8 +242,8 @@
         {% block change_footer %}
             <footer>
                 <div class="footer">
-                    <img class="left" id="social" src="static/images/Facebook.png" alt="facebook">
-                    <img class="left" id="social" src="static/images/twitter.png" alt="twitter">
+                    <a target="_blank" href="http://www.facebook.com"><img class="left" id="social" src="static/images/Facebook.png" alt="facebook"></a>
+                    <a target="_blank" href="http://www.twitter.com"><img class="left" id="social" src="static/images/twitter.png" alt="twitter"></a>
                     <p class="right">(816)525-2898</p>
                 </div>
             </footer>
