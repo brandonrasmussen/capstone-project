@@ -4,10 +4,10 @@ import os
 
 # Flask-WTF
 from flask_wtf import Form 
-from wtforms import TextField, PasswordField, validators, HiddenField
-from wtforms import TextAreaField, BooleanField
-from wtforms.validators import Required, EqualTo, Optional
+from wtforms import TextField, PasswordField, validators, HiddenField, TextAreaField, BooleanField, SelectField, DateField, IntegerField, RadioField
+from wtforms.validators import Required, EqualTo, Optional, AnyOf
 from wtforms.validators import Length, email
+from wtforms.fields.html5 import DateField
 
 # Hash Passwords
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -125,7 +125,6 @@ class SignupForm(Form):
             Required('Please provide a phone number')])
     email = TextField('Email Address', validators=[
             Required('Please provide a valid email address'),
-            Length(min=6, message=(u'Email address too short')),
             email(message=(u'That\'s not a valid email address.'))])
     password = PasswordField('Password', validators=[
             Required(),
@@ -134,9 +133,36 @@ class SignupForm(Form):
 # Class for Login WTForm Fields
 class LoginForm(Form):
     email = TextField('Email Address', validators=[
-            Required('Please provide a valid email address')])
+            Required('Please provide a valid email address'),
+            email(message=(u'That\'s not a valid email address.'))])
     password = PasswordField('Password', validators=[
             Required('Please provide a valid password')])
+
+# Class for Contact WTForm Fields
+class ContactForm(Form):
+    tell = SelectField(u'What would you like to tell us about?', choices=[('none', 'Please select one'), ('restaurant', 'Restaurant/Food Experience'), ('site', 'Website'),
+            ('general', 'General Inquiry')], validators =[AnyOf(values=['restaurant', 'site'], message='Please select an option')])
+    order = SelectField(u'How did you order?', choices=[('none', 'Please select one'), ('online', 'Online'), ('phone', 'Telephone'), ('dine', 'Dine-In')], 
+    validators =[AnyOf(values=['online', 'phone', 'dine'], message='Please select an option')])
+    time = SelectField(u'Time', choices=[('none', 'Please select one'), ('lunch', 'Lunch (Before 2pm)'), ('midday', 'Midday (2pm-5pm)'), ('dinner', 'Dinner (5pm-8pm'),
+            ('late', 'Late Night (After 8pm)')], validators =[AnyOf(values=['lunch', 'midday', 'dinner', 'late'], message='Please select an option')])
+    date = DateField('Date',format='%m/%d/%Y', validators=[
+            Required("Please select a date")])
+    amount = IntegerField('Total Amount', validators=[Required('Please provide the amount of your order')])
+    share = SelectField(u'Did you share your feedback with the restaurant?', choices=[('none', 'Please select one'), ('yes', 'Yes'), ('no', 'No')],
+    validators =[AnyOf(values=['yes', 'no'], message='Please select an option')])
+    message = TextAreaField('Message', validators=[Required('Please provide a message')])
+    response = RadioField ('How would you like us to get back to you?', choices=[('email', 'Email'), ('phone', 'Telephone'), ('none', 'No Response Needed')])
+    firstName = TextField('First Name', validators=[Required('Please provide your first name')])
+    lastName = TextField('Last Name', validators=[Required('Please provide your last name')])
+    email = TextField('Email Address', validators=[Required('Please provide your email address'),
+    email(message=(u'That\'s not a valid email address.'))])
+    confirmEmail = TextField('Confirm Address', validators=[EqualTo('email', message='Email does not match')])
+    phone = TextField('Telphone Number', validators=[Required('Please provide a telephone number')])
+    address = TextField('Address', validators=[Required('Please provide an address')])
+    city = TextField('City', validators=[Required('Please provide a city')])
+    state = TextField('State', validators=[Required('Please provide a state')])
+    postal = TextField('Zip Code', validators=[Required('Please provide a zip code')])
 
 @app.route('/')
 def homepage():
@@ -144,11 +170,21 @@ def homepage():
 
 @app.route('/menu')
 def menu():
-    return render_template('menu.html')
+    return render_template('menu.html', title='Menu')
 
 @app.route('/companyinfo')
 def info():
     return render_template('companyinfo.html', title='Company Information')
+
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    form = ContactForm()
+
+    if request.method == 'POST':
+        if form.validate() == False:
+            return render_template('contact.html', form=form, title='Contact Us')
+    elif request.method == 'GET':
+        return render_template('contact.html', form=form, title='Contact Us')
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():

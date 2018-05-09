@@ -8,68 +8,71 @@
 
 {% block content %}
     <br>
+    <div class='container pad-form'>
     <h2>Create an Account</h2>
+    <hr>
     <form action="/signup" method="POST">
         <div class="form-row">
-            <!-- creates specail token for current form -->
+            <!-- creates special token for current form -->
             {{ form.hidden_tag() }}
             <div class="form-group col-md-6 {% if form.firstName.errors %} has-error {% endif %}">
-                {{form.firstName.label}}
+                {{ form.firstName.label }}
                 {{ form.firstName(class="form-control", placeholder="John") }}
-                {{ form.firstName.errors[0] }}
+                <span class="error">{{ form.firstName.errors[0] }}</span>
             </div>
             <div class="form-group col-md-6 {% if form.lastName.errors %} has-error {% endif %}">
-                {{form.lastName.label}}
+                {{ form.lastName.label }}
                 {{ form.lastName(class="form-control", placeholder="Smith") }}
-                {{ form.lastName.errors[0] }}
+                <span class="error">{{ form.lastName.errors[0] }}</span>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-6 {% if form.email.errors %} has-error {% endif %}">
-                {{form.email.label}}
+                {{ form.email.label }}
                 {{ form.email(class="form-control", placeholder="jsmith@yahoo.com") }}
-                {{ form.email.errors[0] }}
+                <span class="error">{{ form.email.errors[0] }}</span>
             </div>
             <div class="form-group col-md-6 {% if form.password.errors %} has-error {% endif %}">
-                {{form.password.label}}
+                {{ form.password.label }}
                 {{ form.password(class="form-control", placeholder="Min. 6 Characters") }}
-                {{ form.password.errors[0] }}
+                <span class="error">{{ form.password.errors[0] }}</span>
             </div>
         </div>
         <div class="form-group {% if form.address.errors %} has-error {% endif %}">
-            {{form.address.label}}
+            {{ form.address.label }}
             {{ form.address(class="form-control", placeholder="405 NW Blue Parkway") }}
-            {{ form.address.errors[0] }}
+            <span class="error">{{ form.address.errors[0] }}</span>
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
-                {{form.apartmentNumber.label}}
+                {{ form.apartmentNumber.label }}
                 {{ form.apartmentNumber(class="form-control", placeholder="Apartment, studio, or floor") }}
             </div>
             <div class="form-group col-md-6 {% if form.phone.errors %} has-error {% endif %}">
-                {{form.phone.label}}
+                {{ form.phone.label }}
                 {{ form.phone(class="form-control", placeholder="(816)525-2898") }}
-                {{ form.phone.errors[0] }}
+                <span class="error">{{ form.phone.errors[0] }}</span>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-6 {% if form.city.errors %} has-error {% endif %}">
-                {{form.city.label}}
+                {{ form.city.label }}
                 {{ form.city(class="form-control", placeholder="Lee's Summit") }}
-                {{ form.city.errors[0] }}
+                <span class="error">{{ form.city.errors[0] }}</span>
             </div>
             <div class="form-group col-md-4 {% if form.state.errors %} has-error {% endif %}">
-                {{form.state.label}}
+                {{ form.state.label }}
                 {{ form.state(class="form-control", placeholder="Missouri") }}
-                {{ form.state.errors[0] }}
+                <span class="error">{{ form.state.errors[0] }}</span>
             </div>
             <div class="form-group col-md-2 {% if form.postalCode.errors %} has-error {% endif %}">
-                {{form.postalCode.label}}
+                {{ form.postalCode.label }}
                 {{ form.postalCode(class="form-control", placeholder="64063") }}
-                {{ form.postalCode.errors[0] }}
+                <span class="error">{{ form.postalCode.errors[0] }}</span>
             </div>
         </div>
         
         <button type="submit" class="btn btn-primary">Sign Up</button>
     </form>
+</div>
 {% endblock %}
