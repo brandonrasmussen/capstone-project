@@ -1,5 +1,6 @@
 from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy
+from flask.ext.mail import Message, Mail 
 import os
 
 # Flask-WTF
@@ -15,13 +16,25 @@ from werkzeug.security import generate_password_hash, check_password_hash
 # Handle Login
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
+mail = Mail()
+
 app = Flask(__name__)
+
 app.config['DEBUG'] = True 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://capstone-project:password@localhost:8889/capstone-project'
 app.config['SQLALCHEMY_ECHO'] = True 
 
 app.config['CSRF_ENABLED'] = True 
 app.config['SECRET_KEY'] = 'pie'
+
+# Flask-Mail
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_USERNAME'] = 'brandonrasmussen2@gmail.com'
+app.config['MAIL_PASSWORD'] = 'Brookie2'
+
+mail.init_app(app)
 
 db = SQLAlchemy(app)
 
@@ -140,19 +153,18 @@ class LoginForm(Form):
 
 # Class for Contact WTForm Fields
 class ContactForm(Form):
-    tell = SelectField(u'What would you like to tell us about?', choices=[('none', 'Please select one'), ('restaurant', 'Restaurant/Food Experience'), ('site', 'Website'),
-            ('general', 'General Inquiry')], validators =[AnyOf(values=['restaurant', 'site'], message='Please select an option')])
-    order = SelectField(u'How did you order?', choices=[('none', 'Please select one'), ('online', 'Online'), ('phone', 'Telephone'), ('dine', 'Dine-In')], 
-    validators =[AnyOf(values=['online', 'phone', 'dine'], message='Please select an option')])
-    time = SelectField(u'Time', choices=[('none', 'Please select one'), ('lunch', 'Lunch (Before 2pm)'), ('midday', 'Midday (2pm-5pm)'), ('dinner', 'Dinner (5pm-8pm'),
-            ('late', 'Late Night (After 8pm)')], validators =[AnyOf(values=['lunch', 'midday', 'dinner', 'late'], message='Please select an option')])
-    date = DateField('Date',format='%m/%d/%Y', validators=[
-            Required("Please select a date")])
-    amount = IntegerField('Total Amount', validators=[Required('Please provide the amount of your order')])
-    share = SelectField(u'Did you share your feedback with the restaurant?', choices=[('none', 'Please select one'), ('yes', 'Yes'), ('no', 'No')],
-    validators =[AnyOf(values=['yes', 'no'], message='Please select an option')])
+    tell = SelectField(u'What would you like to tell us about?', choices=[('none', 'Please select one'), ('Restaurant/Food Experience', 'Restaurant/Food Experience'), ('Website', 'Website'),
+            ('General Inquiry', 'General Inquiry')], validators =[AnyOf(values=['Restaurant/Food Experience', 'Website', 'General Inquiry'], message='Please select an option')])
+    order = SelectField(u'How did you order?', choices=[('none', 'Please select one'), ('Online', 'Online'), ('Telephone', 'Telephone'), ('Dine-In', 'Dine-In')], 
+    validators =[AnyOf(values=['Online', 'Telephone', 'Dine-In'], message='Please select an option')])
+    time = SelectField(u'Time', choices=[('none', 'Please select one'), ('Lunch', 'Lunch (Before 2pm)'), ('Midday', 'Midday (2pm-5pm)'), ('Dinner', 'Dinner (5pm-8pm'),
+            ('Late', 'Late Night (After 8pm)')], validators =[AnyOf(values=['Lunch', 'Midday', 'Dinner', 'Late'], message='Please select an option')])
+    date = DateField('Date', format='%Y-%m-%d')
+    amount = TextField('Total Amount', validators=[Required('Please provide the amount of your order')])
+    share = SelectField(u'Did you share your feedback with the restaurant?', choices=[('none', 'Please select one'), ('Yes', 'Yes'), ('No', 'No')],
+    validators =[AnyOf(values=['Yes', 'No'], message='Please select an option')])
     message = TextAreaField('Message', validators=[Required('Please provide a message')])
-    response = RadioField ('How would you like us to get back to you?', choices=[('email', 'Email'), ('phone', 'Telephone'), ('none', 'No Response Needed')])
+    response = RadioField ('How would you like us to get back to you?', choices=[('Email', 'Email'), ('Phone', 'Telephone'), ('None', 'No Response Needed')])
     firstName = TextField('First Name', validators=[Required('Please provide your first name')])
     lastName = TextField('Last Name', validators=[Required('Please provide your last name')])
     email = TextField('Email Address', validators=[Required('Please provide your email address'),
@@ -183,6 +195,35 @@ def contact():
     if request.method == 'POST':
         if form.validate() == False:
             return render_template('contact.html', form=form, title='Contact Us')
+        else:
+            msg = Message(form.tell.data, sender='brandonrasmussen2@gmail.com', recipients=['brandonrasmussen2@gmail.com'])
+            msg.body = """ 
+            From: %s %s <%s>
+
+            How was it ordered: %s
+            Time: %s 
+            Date: %s
+            Amount of order: %s
+            Share Feedback: %s
+
+            Message: %s
+
+            Response Needed: %s
+
+            Contact Info
+            E-mail Address: %s
+            Telephone Number: %s
+            Address: %s
+            City: %s
+            State: %s
+            Zip Code: %s
+
+
+            """ %(form.firstName.data,form.lastName.data, form.email.data, form.order.data, form.time.data, form.date.data, form.amount.data,
+                form.share.data,form.message.data, form.response.data, form.email.data, form.phone.data, form.address.data, form.city.data, form.state.data,
+                form.postal.data)
+            mail.send(msg)
+            return render_template('contact.html', success=True)
     elif request.method == 'GET':
         return render_template('contact.html', form=form, title='Contact Us')
 
