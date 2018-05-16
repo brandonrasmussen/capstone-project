@@ -176,11 +176,15 @@ class ContactForm(Form):
     state = TextField('State', validators=[Required('Please provide a state')])
     postal = TextField('Zip Code', validators=[Required('Please provide a zip code')])
 
+# Class for Menu WTForm Fields
+class Menu(Form):
+    hippie = RadioField(choices=[('Small', 'Small'), ])
+    
 @app.route('/')
 def homepage():
     return render_template('index.html', title='Fun House Pizza')
 
-@app.route('/menu')
+@app.route('/menu', methods=['GET', 'POST'])
 def menu():
     return render_template('menu.html', title='Menu')
 

@@ -9,6 +9,7 @@
         <p class="left">Contact Us</p>
         <p class="right">{{ current_user.firstName }} | <a href='/logout'>Log Out</a></p>
     </div>
+        
 {% else %}
     <div class="banner">
         <p class="left">Contact Us</p>
@@ -19,11 +20,125 @@
 
 {% block content %}
 {% if success %}
-    <div class='containter-fluid'>
+    <div class="container-fluid">
         <h5 id='center'>Thank you for your message. We'll get back to you shortly.</h5>
     </div>
-    
 
+{% elif current_user.is_authenticated %}
+    <div class='container-fluid'>
+        <div class='container pad-form'>
+        <h2>Email Us Your Feedback</h2>
+        <hr>
+        <form action="/contact" method='POST'>
+            <div class="form-row">
+                <!-- creates special token for current form -->
+                {{ form.hidden_tag() }}
+                <div class="form-group col-md-6 {% if form.tell.errors %} has-error {% endif %}">
+                    {{ form.tell.label }}
+                    {{ form.tell(class="form-control") }}
+                    <span class="error">{{ form.tell.errors[0] }}</span>
+                </div>
+                <div class="form-group col-md-6 {% if form.order.errors %} has-error {% endif %}">
+                    {{ form.order.label }}
+                    {{ form.order(class="form-control") }}
+                    <span class="error">{{ form.order.errors[0] }}</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6 {% if form.time.errors %} has-error {% endif %}">
+                    {{ form.time.label }}
+                    {{ form.time(class="form-control") }}
+                    <span class="error">{{ form.time.errors[0] }}</span>
+                </div>
+                <div class="form-group col-md-6 {% if form.date.errors %} has-error {% endif %}">
+                    {{ form.date.label }}
+                    {{ form.date(class="datepicker form-control") }}
+                    <span class="error">{{ form.date.errors[0] }}</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6 {% if form.amount.errors %} has-error {% endif %}">
+                    {{ form.amount.label }}
+                    {{ form.amount(class="form-control") }}
+                    <span class="error">{{ form.amount.errors[0] }}</span>
+                </div>
+                <div class="form-group col-md-6 {% if form.share.errors %} has-error {% endif %}">
+                    {{ form.share.label }}
+                    {{ form.share(class="form-control") }}
+                    <span class="error">{{ form.share.errors[0] }}</span>
+                </div>
+            </div>
+            <div class="form-group {% if form.message.errors %} has-error {% endif %}">
+                {{ form.message.label }}
+                {{ form.message(class="form-control") }}
+                <span class="error">{{ form.message.errors[0] }}</span>
+            </div>
+            <div class="form-group {% if form.response.errors %} has-error {% endif %}">
+                {{ form.response.label }}
+                <br>
+                {{ form.response(class="form-check-inline") }}
+                <span class="error">{{ form.response.errors[0] }}</span>
+            </div>
+        <h2>Your Contact Information</h2>
+        <div class="form-row">
+            <div class="form-group col-md-6 {% if form.firstName.errors %} has-error {% endif %}">
+                {{ form.firstName.label }}
+                <span class="form-control">{{ current_user.firstName }}</span>
+                <span class="error">{{ form.firstName.errors[0] }}</span>
+            </div>
+            <div class="form-group col-md-6 {% if form.lastName.errors %} has-error {% endif %}">
+                {{ form.lastName.label }}
+                <span class="form-control">{{ current_user.lastName }}</span>
+                <span class="error">{{ form.lastName.errors[0] }}</span>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6 {% if form.email.errors %} has-error {% endif %}">
+                {{ form.email.label }}
+                <span class="form-control">{{ current_user.email }}</span>
+                <span class="error">{{ form.email.errors[0] }}</span>
+            </div>
+            <div class="form-group col-md-6 {% if form.confirmEmail.errors %} has-error {% endif %}">
+                {{ form.confirmEmail.label }}
+                <span class="form-control">{{ current_user.email }}</span>
+                <span class="error">{{ form.confirmEmail.errors[0] }}</span>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6 {% if form.phone.errors %} has-error {% endif %}">
+                {{ form.phone.label }}
+                <span class="form-control">{{ current_user.phone }}</span>
+                <span class="error">{{ form.phone.errors[0] }}</span>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6 {% if form.address.errors %} has-error {% endif %}">
+                {{ form.address.label }}
+                <span class="form-control">{{ current_user.address }}</span>
+                <span class="error">{{ form.address.errors[0] }}</span>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-4 {% if form.city.errors %} has-error {% endif %}">
+                {{ form.city.label }}
+                <span class="form-control">{{ current_user.city }}</span>
+                <span class="error">{{ form.city.errors[0] }}</span>
+            </div>
+            <div class="form-group col-md-4 {% if form.state.errors %} has-error {% endif %}">
+                {{ form.state.label }}
+                <span class="form-control">{{ current_user.state }}</span>
+                <span class="error">{{ form.state.errors[0] }}</span>
+            </div>
+            <div class="form-group col-md-4 {% if form.postal.errors %} has-error {% endif %}">
+                {{ form.postal.label }}
+                <span class="form-control">{{ current_user.postalCode }}</span>
+                <span class="error">{{ form.postal.errors[0] }}</span>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+    
 {% else %}
     <div class='container-fluid'>
         <div class='container pad-form'>
@@ -138,5 +253,10 @@
         <button type="submit" class="btn btn-primary">Submit</button>
         </div>
     </div>
+{% endif %}
+{% endblock %}
+{% block change_footer %}
+{% if success %}
+
 {% endif %}
 {% endblock %}
